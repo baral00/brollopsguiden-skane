@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { getShopById } from "@/data/catalog";
 import { shopsInSkane } from "@/data/fashion";
+import { createMetadata } from "@/lib/seo";
 
 type ShopPageProps = {
   params: Promise<{ shopId: string }>;
@@ -26,10 +27,17 @@ export async function generateMetadata({ params }: ShopPageProps): Promise<Metad
     };
   }
 
-  return {
-    title: `${shop.name} | Butiker i Skåne`,
-    description: `${shop.name} i ${shop.city}. Specialitet: ${shop.specialty}.`,
-  };
+  return createMetadata({
+    title: `${shop.name} i ${shop.city}`,
+    description: `${shop.name} i ${shop.city}. ${shop.specialty}. Se adress, telefon, webbplats och Google Maps för butiken.`,
+    path: `/mode/butik/${shop.id}`,
+    keywords: [
+      shop.name,
+      `brudbutik ${shop.city}`,
+      `bröllopsbutik ${shop.city}`,
+      shop.specialty,
+    ],
+  });
 }
 
 export default async function ShopDetailPage({ params }: ShopPageProps) {
@@ -100,3 +108,5 @@ export default async function ShopDetailPage({ params }: ShopPageProps) {
     </div>
   );
 }
+
+

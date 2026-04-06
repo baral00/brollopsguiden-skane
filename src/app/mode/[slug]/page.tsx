@@ -12,6 +12,7 @@ import {
   getFashionTrendById,
   trendImages,
 } from "@/data/catalog";
+import { createMetadata } from "@/lib/seo";
 
 type FashionTrendPageProps = {
   params: Promise<{ slug: string }>;
@@ -48,10 +49,20 @@ export async function generateMetadata({ params }: FashionTrendPageProps): Promi
     };
   }
 
-  return {
-    title: `${trend.title} | Bröllopsmode 2026`,
-    description: trend.description,
-  };
+  const category = getFashionCategoryLabel(slug);
+
+  return createMetadata({
+    title: `${trend.title} inom ${category.toLowerCase()}`,
+    description: `${trend.description} Läs om ${category.toLowerCase()} och få inspiration för bröllopsmode i Skåne.`,
+    path: `/mode/${trend.id}`,
+    image: trendImages[trend.id] || fallbackTrendImage,
+    keywords: [
+      trend.title,
+      `${category} 2026`,
+      "bröllopsmode 2026",
+      "bröllopsinspiration Skåne",
+    ],
+  });
 }
 
 export default async function FashionTrendPage({ params }: FashionTrendPageProps) {
@@ -149,3 +160,4 @@ export default async function FashionTrendPage({ params }: FashionTrendPageProps
     </div>
   );
 }
+

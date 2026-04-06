@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
@@ -28,19 +28,20 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    if (!isMenuOpen) {
-      document.body.style.overflow = "";
-      return;
+    const previousOverflow = document.body.style.overflow;
+
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = previousOverflow || "";
     }
 
-    const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsMenuOpen(false);
       }
     };
 
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -49,132 +50,95 @@ export function Header() {
     };
   }, [isMenuOpen]);
 
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-md py-0"
-          : "bg-white/70 backdrop-blur-sm py-1"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-xl sm:text-2xl font-serif text-[#2C2C2C] group-hover:text-[#D4A5A5] transition-colors duration-300">
-              Bröllopsguiden<span className="text-[#D4A5A5] font-script"> Skåne</span>
-            </span>
-          </Link>
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-white/95 py-0 shadow-md backdrop-blur-md"
+            : "bg-white/70 py-1 backdrop-blur-sm"
+        }`}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-20 items-center justify-between">
+            <Link href="/" className="group flex items-center gap-2" onClick={closeMenu}>
+              <span className="text-xl font-serif text-[#2C2C2C] transition-colors duration-300 group-hover:text-[#D4A5A5] sm:text-2xl">
+                Bröllopsguiden<span className="font-script text-[#D4A5A5]"> Skåne</span>
+              </span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
-                  pathname === link.href
-                    ? "text-[#D4A5A5]"
-                    : "text-[#2C2C2C]/70 hover:text-[#D4A5A5] hover:bg-[#D4A5A5]/5"
-                }`}
-              >
-                {link.label}
-                {pathname === link.href && (
-                  <motion.div
-                    layoutId="activeNav"
-                    className="absolute -bottom-0.5 left-3 right-3 h-0.5 bg-gradient-to-r from-transparent via-[#D4A5A5] to-transparent"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-[#2C2C2C] hover:bg-[#D4A5A5]/10 transition-colors"
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-navigation"
-            type="button"
-          >
-            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation Drawer */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
-            />
-
-            {/* Drawer */}
-            <motion.nav
-              id="mobile-navigation"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-80 bg-[#FDFBF7] shadow-2xl z-50 lg:hidden overflow-y-auto"
-            >
-              <div className="p-8">
-                {/* Close + Logo */}
-                <div className="flex items-center justify-between mb-10">
-                  <Link
-                    href="/"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <span className="text-xl font-serif text-[#2C2C2C]">
-                      Bröllopsguiden<span className="text-[#D4A5A5] font-script"> Skåne</span>
-                    </span>
-                  </Link>
-                  <button
-                    onClick={() => setIsMenuOpen(false)}
-                    className="p-2 rounded-xl hover:bg-[#D4A5A5]/10 transition-colors"
-                    aria-label="Close menu"
-                    type="button"
-                  >
-                    <X className="w-5 h-5 text-[#2C2C2C]" />
-                  </button>
-                </div>
-
-                {/* Navigation Links */}
-                <div className="flex flex-col gap-1">
-                  {navLinks.map((link, index) => (
+            <nav className="hidden items-center gap-1 lg:flex">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 ${
+                    pathname === link.href
+                      ? "text-[#D4A5A5]"
+                      : "text-[#2C2C2C]/70 hover:bg-[#D4A5A5]/5 hover:text-[#D4A5A5]"
+                  }`}
+                >
+                  {link.label}
+                  {pathname === link.href ? (
                     <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className={`block px-4 py-3.5 rounded-xl text-base font-medium transition-all duration-300 ${
-                          pathname === link.href
-                            ? "bg-[#D4A5A5]/10 text-[#D4A5A5] border-l-2 border-[#D4A5A5]"
-                            : "text-[#2C2C2C]/70 hover:bg-[#D4A5A5]/5 hover:text-[#D4A5A5]"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.nav>
-          </>
-        )}
-      </AnimatePresence>
-    </header>
+                      layoutId="activeNav"
+                      className="absolute -bottom-0.5 left-3 right-3 h-0.5 bg-gradient-to-r from-transparent via-[#D4A5A5] to-transparent"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  ) : null}
+                </Link>
+              ))}
+            </nav>
+
+            <button
+              onClick={toggleMenu}
+              className="relative z-[80] rounded-xl p-2.5 text-[#2C2C2C] transition-colors hover:bg-[#D4A5A5]/10 lg:hidden touch-manipulation"
+              aria-label={isMenuOpen ? "Stäng meny" : "Öppna meny"}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
+              type="button"
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {isMenuOpen ? (
+        <>
+          <button
+            aria-label="Stäng mobilmeny"
+            className="fixed inset-0 z-[60] bg-black/45 backdrop-blur-sm lg:hidden"
+            onClick={closeMenu}
+            type="button"
+          />
+
+          <nav
+            id="mobile-navigation"
+            className="fixed inset-y-0 right-0 z-[70] w-[min(20rem,calc(100vw-1rem))] overflow-y-auto bg-[#FDFBF7] px-6 pb-8 pt-24 shadow-2xl lg:hidden"
+          >
+            <div className="flex flex-col gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={closeMenu}
+                  className={`block rounded-xl px-4 py-3.5 text-base font-medium transition-all duration-300 ${
+                    pathname === link.href
+                      ? "border-l-2 border-[#D4A5A5] bg-[#D4A5A5]/10 text-[#D4A5A5]"
+                      : "text-[#2C2C2C]/75 hover:bg-[#D4A5A5]/5 hover:text-[#D4A5A5]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        </>
+      ) : null}
+    </>
   );
 }

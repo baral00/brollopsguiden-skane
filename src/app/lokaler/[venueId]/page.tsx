@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Mail, MapPin, Phone, Users } from "lucide-react";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { getVenueById, getVenueImageById, venuePriceRanges } from "@/data/catalog";
 import { venues } from "@/data/venues";
+import { createMetadata } from "@/lib/seo";
 
 type VenuePageProps = {
   params: Promise<{ venueId: string }>;
@@ -28,10 +29,18 @@ export async function generateMetadata({ params }: VenuePageProps): Promise<Meta
     };
   }
 
-  return {
-    title: `${venue.name} | Bröllopsguiden Skåne`,
-    description: venue.description,
-  };
+  return createMetadata({
+    title: `${venue.name} i ${venue.location}`,
+    description: `${venue.description} Se fakta om kapacitet, stil, kontaktuppgifter och om lokalen passar ert bröllop i Skåne.`,
+    path: `/lokaler/${venue.id}`,
+    image: getVenueImageById(venue.id),
+    keywords: [
+      `${venue.name} bröllop`,
+      `${venue.name} Skåne`,
+      `bröllopslokal ${venue.location}`,
+      `${venue.type} bröllop Skåne`,
+    ],
+  });
 }
 
 export default async function VenueDetailPage({ params }: VenuePageProps) {
@@ -71,10 +80,10 @@ export default async function VenueDetailPage({ params }: VenuePageProps) {
             </span>
             <span className="inline-flex items-center gap-2">
               <Users className="h-4 w-4" />
-              Upp till {venue.capacity} gäster
+              Upp till {venue.capacity} gÃ¤ster
             </span>
             <span className="inline-flex items-center gap-2">
-              Prisnivå {priceRange.symbol}
+              PrisnivÃ¥ {priceRange.symbol}
             </span>
           </div>
           <p className="max-w-3xl text-lg text-white/85">{venue.description}</p>
@@ -102,7 +111,7 @@ export default async function VenueDetailPage({ params }: VenuePageProps) {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-xl font-serif text-[#2C2C2C]">Det här ingår</h2>
+              <h2 className="text-xl font-serif text-[#2C2C2C]">Det hÃ¤r ingÃ¥r</h2>
               <div className="flex flex-wrap gap-2">
                 {venue.amenities.map((amenity) => (
                   <Badge key={amenity} variant="outline" className="text-sm">
@@ -125,7 +134,7 @@ export default async function VenueDetailPage({ params }: VenuePageProps) {
                 </p>
                 <p className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-[#D4A5A5]" />
-                  Kapacitet för {venue.capacity} gäster
+                  Kapacitet fÃ¶r {venue.capacity} gÃ¤ster
                 </p>
                 {venue.contact.phone ? (
                   <p className="flex items-center gap-2">
@@ -145,11 +154,11 @@ export default async function VenueDetailPage({ params }: VenuePageProps) {
 
           <Card className="border-none bg-white/85 shadow-lg">
             <CardHeader className="space-y-4">
-              <CardTitle>Passar särskilt bra för</CardTitle>
+              <CardTitle>Passar sÃ¤rskilt bra fÃ¶r</CardTitle>
               <div className="grid gap-3 text-sm text-gray-700">
-                <p>Brudpar som vill kombinera en tydlig miljö med enkel logistik för gästerna.</p>
-                <p>Planering med fokus på upplevelse, foto och en lokal som känns genomarbetad hela dagen.</p>
-                <p>Fester där ni vill samla ceremoni, middag och mingel på ett och samma ställe.</p>
+                <p>Brudpar som vill kombinera en tydlig miljÃ¶ med enkel logistik fÃ¶r gÃ¤sterna.</p>
+                <p>Planering med fokus pÃ¥ upplevelse, foto och en lokal som kÃ¤nns genomarbetad hela dagen.</p>
+                <p>Fester dÃ¤r ni vill samla ceremoni, middag och mingel pÃ¥ ett och samma stÃ¤lle.</p>
               </div>
             </CardHeader>
           </Card>
@@ -158,3 +167,4 @@ export default async function VenueDetailPage({ params }: VenuePageProps) {
     </div>
   );
 }
+
