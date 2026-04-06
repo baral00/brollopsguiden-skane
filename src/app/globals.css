@@ -1,26 +1,166 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FDFBF7;
+  --foreground: #2C2C2C;
+  --font-cormorant: "Palatino Linotype", "Book Antiqua", "Iowan Old Style", Georgia, serif;
+  --font-lora: "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-script: "Segoe Print", "Lucida Handwriting", "Segoe Script", "Brush Script MT", cursive;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-lora), Georgia, serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+
+  /* Brand Colors */
+  --color-dustyrose: #D4A5A5;
+  --color-sagegreen: #9CAF88;
+  --color-warmgold: #C9A96E;
+  --color-charcoal: #2C2C2C;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  font-family: var(--font-lora), Georgia, serif;
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(255, 250, 244, 0.88), rgba(255, 250, 244, 0.88)),
+    url("/Gemini_Generated_Image_2900922900922900.png");
+  background-size: auto, cover;
+  background-position: center, center top;
+  background-repeat: repeat, no-repeat;
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.7;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+p,
+li,
+a,
+button,
+input,
+textarea,
+label,
+select {
+  font-family: var(--font-lora), Georgia, serif;
+}
+
+/* Decorative floral corners and floating elements */
+.page-bg {
+  position: relative;
+}
+
+.page-bg::before,
+.page-bg::after {
+  content: none;
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  line-height: 1.2;
+  letter-spacing: -0.018em;
+  font-weight: 500;
+}
+
+/* Script/calligraphic font for display headings */
+.font-script {
+  font-family: var(--font-script), cursive !important;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+}
+
+/* Elegant section divider */
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 0 24px;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A96E, transparent);
+}
+
+.section-divider-dot {
+  width: 6px;
+  height: 6px;
+  background: #C9A96E;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Premium image overlay for cards */
+.card-image-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-image-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(44, 44, 44, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4A5A5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C49494;
+}
+
+/* Hide scrollbar for horizontal scroll sections */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Infinite marquee scroll animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
